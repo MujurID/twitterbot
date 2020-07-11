@@ -150,7 +150,7 @@ def search_and_retweet(query: str, count=1):
                           TwitterAuth.consumer_secret,
                           TwitterAuth.access_token,
                           TwitterAuth.access_token_secret)
-        search_results = twitter.search(q=query, count=count, result_type="recen")
+        search_results = twitter.search(q=query, count=count, result_type="recent")
     except TwythonError as e:
         print(e)
         return
