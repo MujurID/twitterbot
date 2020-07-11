@@ -4,6 +4,8 @@ import os
 import sys
 import feedparser
 from twython import Twython, TwythonError
+from random import randint
+from time import sleep
 
 
 class Settings:
@@ -21,7 +23,7 @@ class Settings:
     posted_retweets_output_file = "posted-retweets.log"
 
     # Include tweets with these words when retweeting.
-    retweet_include_words = ["#hashtag"]
+    retweet_include_words = ["mutualan%20rt"]
 
     # Do not include tweets with these words when retweeting.
     retweet_exclude_words = []
@@ -33,10 +35,10 @@ class TwitterAuth:
     Create a Twitter app at https://apps.twitter.com/ and generate
     consumer key, consumer secret etc. and insert them here.
     """
-    consumer_key = "XXX"
-    consumer_secret = "XXX"
-    access_token = "XXX"
-    access_token_secret = "XXX"
+    consumer_key = ""
+    consumer_secret = ""
+    access_token = ""
+    access_token_secret = ""
 
 
 def compose_message(item: feedparser.FeedParserDict) -> str:
@@ -132,7 +134,7 @@ def get_query() -> str:
     return include + " " + exclude
 
 
-def search_and_retweet(query: str, count=10):
+def search_and_retweet(query: str, count=1):
     """Search for a query in tweets, and retweet those tweets.
 
     Parameters
@@ -148,7 +150,7 @@ def search_and_retweet(query: str, count=10):
                           TwitterAuth.consumer_secret,
                           TwitterAuth.access_token,
                           TwitterAuth.access_token_secret)
-        search_results = twitter.search(q=query, count=count)
+        search_results = twitter.search(q=query, count=count, result_type="recen")
     except TwythonError as e:
         print(e)
         return
@@ -224,7 +226,12 @@ if __name__ == "__main__":
         if sys.argv[1].lower() == "rss":
             read_rss_and_tweet(url=Settings.feed_url)
         elif sys.argv[1].lower() == "rt":
-            search_and_retweet(query=get_query())
+            while (1):
+                search_and_retweet(query=get_query())
+                tidur = randint(60,120)
+                print(tidur)
+                print("\n")
+                sleep(tidur)
         else:
             display_help()
     else:
